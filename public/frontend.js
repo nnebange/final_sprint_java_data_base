@@ -1,59 +1,62 @@
-// Establish a WebSocket connection to the server
-const socket = new WebSocket('ws://localhost:3000/ws');
-
-// Listen for messages from the server
-socket.addEventListener('message', (event) => {
-    const data = JSON.parse(event.data);
-
-    //TODO: Handle the events from the socket
-});
-
-
-/**
- * Handles adding a new poll to the page when one is received from the server
- * 
- * @param {*} data The data from the server (ideally containing the new poll's ID and it's corresponding questions)
- */
-function onNewPollAdded(data) {
-    //TODO: Fix this to add the new poll to the page
-    
-    const pollContainer = document.getElementById('polls');
-    const newPoll = null;
-    pollContainer.appendChild(newPoll);
-
-    //TODO: Add event listeners to each vote button. This code might not work, it depends how you structure your polls on the poll page. However, it's left as an example 
-    //      as to what you might want to do to get clicking the vote options to actually communicate with the server
-    newPoll.querySelectorAll('.poll-form').forEach((pollForm) => {
-        pollForm.addEventListener('submit', onVoteClicked);
-    });
-}
-
-/**
- * Handles updating the number of votes an option has when a new vote is recieved from the server
- * 
- * @param {*} data The data from the server (probably containing which poll was updated and the new vote values for that poll)
- */
-function onIncomingVote(data) {
-    
-}
-
-/**
- * Handles processing a user's vote when they click on an option to vote
- * 
- * @param {FormDataEvent} event The form event sent after the user clicks a poll option to "submit" the form
- */
-function onVoteClicked(event) {
-    //Note: This function only works if your structure for displaying polls on the page hasn't changed from the template. If you change the template, you'll likely need to change this too
-    event.preventDefault();
-    const formData = new FormData(event.target);
-
-    const pollId = formData.get("poll-id");
-    const selectedOption = event.submitter.value;
-    
-    //TOOD: Tell the server the user voted
-}
-
-//Adds a listener to each existing poll to handle things when the user attempts to vote
-document.querySelectorAll('.poll-form').forEach((pollForm) => {
-    pollForm.addEventListener('submit', onVoteClicked);
+const socket = new WebSocket('ws://localhost:3000/ws');  
+  
+socket.addEventListener('message', (event) => {  
+   const data = JSON.parse(event.data);  
+   if (data.type === 'vote') {  
+      onIncomingVote(data);  
+   } else if (data.type === 'newPoll') {  
+      onNewPollAdded(data.poll);  
+   }  
+});  
+  
+function onIncomingVote(data) {  
+   const optionElement = document.querySelector(  
+      `[data-poll-id="${data.pollId}"] [data-option-id="${data.optionId}"] .vote-count`  
+   );  
+   if (optionElement) {  
+      optionElement.textContent = data.newVoteCount;  
+   }  
+}  
+  
+function onNewPollAdded(poll) {  
+   const pollsContainer = document.getElementById('polls');  
+   const newPollElement = createPollElement(poll);  
+   pollsContainer.appendChild(newPollElement);  
+}  
+  
+function createPollElement(poll) {  
+   const pollElement = document.createElement('div');  
+   pollElement.className = 'poll-container';  
+   pollElement.setAttribute('data-poll-id', poll._id);  
+   pollElement.innerHTML = `  
+      <h2>${poll.question}</h2>  
+      <ul class="poll-options">  
+        ${poll.options.map(option => `  
+           <li data-option-id="${option._id}">  
+              ${option.answer} - Votes: <span class="vote-count">${option.votes}</span>  
+              <button onclick="vote('${poll._id}', '${option._id}')">Vote</button>  
+           </li>  
+        `).join('')}  
+      </ul>  
+   `;  
+   return pollElement;  
+}  
+  
+function vote(pollId, optionId) {  
+   socket.send(JSON.stringify({  
+      type: 'vote',  
+      pollId,  
+      optionId  
+   }));  
+}  
+  
+// Add event listeners to existing poll forms  
+document.querySelectorAll('.poll-form').forEach((pollForm) => {  
+   pollForm.addEventListener('submit', (event) => {  
+      event.preventDefault();  
+      const formData = new FormData(event.target);  
+      const pollId = formData.get("poll-id");  
+      const optionId = event.submitter.value;  
+      vote(pollId, optionId);  
+   });  
 });
