@@ -1,0 +1,14 @@
+<header>  
+    <nav>  
+       <a href="/">Home</a>  
+       <% if (locals.user) { %>  
+         <a href="/profile">Profile</a>  
+         <a href="/createPoll">Create Poll</a>  
+         <a href="/logout">Logout</a>  
+       <% } else { %>  
+         <a href="/login">Login</a>  
+         <a href="/signup">Sign Up</a>  
+       <% } %>  
+    </nav>  
+ </header>
+ 

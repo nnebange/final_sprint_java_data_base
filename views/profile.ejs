@@ -1,0 +1,29 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+   <meta charset="UTF-8">  
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+   <title>Profile</title>  
+   <link rel="stylesheet" href="/styles.css">  
+</head>  
+<body>  
+   <%- include('partials/header') %>  
+   <div class="container">  
+      <h1>Profile</h1>  
+      <div class="profile-info">  
+        <p>Username: <%= user.username %></p>  
+        <p>Polls voted in: <%= votedPolls.length %></p>  
+      </div>  
+      <% if (votedPolls.length > 0) { %>  
+        <h2>Voted Polls</h2>  
+        <div class="voted-polls">  
+           <% votedPolls.forEach(poll => { %>  
+              <div class="poll-container">  
+                <h3><%= poll.question %></h3>  
+              </div>  
+           <% }) %>  
+        </div>  
+      <% } %>  
+   </div>  
+</body>  
+</html>

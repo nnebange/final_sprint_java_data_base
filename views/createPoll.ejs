@@ -1,23 +1,47 @@
-<!-- TODO: Header? -->
-<body>
-    <div class="main-content">
-        <h1>Create a New Poll</h1>
-        <form action="/createPoll" method="POST">
-            <div class="form-input-container">
-                <label for="question">Poll Question:</label>
-                <input type="text" id="question" name="question" required>
-            </div>
-            <div class="form-input-container">
-                <label for="option1">Option 1:</label>
-                <input type="text" id="option1" name="options[Option 1]" required>
-            </div>
-            <div class="form-input-container">
-                <label for="option2">Option 2:</label>
-                <input type="text" id="option2" name="options[Option 2]" required>
-            </div>
-            <!-- If necessary, you can add more options similar to how they were added above -->
-            <button type="submit" class="action-button full-width">Create Poll</button>
-        </form>
-    </div>
-</body>
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+   <meta charset="UTF-8">  
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+   <title>Create Poll</title>  
+   <link rel="stylesheet" href="/styles.css">  
+</head>  
+<body>  
+   <%- include('partials/header') %>  
+   <div class="container">  
+      <h1>Create a New Poll</h1>  
+      <form action="/createPoll" method="POST">  
+        <div class="form-input-container">  
+           <label for="question">Question:</label>  
+           <input type="text" id="question" name="question" required>  
+        </div>  
+        <div id="options">  
+           <div class="form-input-container">  
+              <label for="option1">Option 1:</label>  
+              <input type="text" id="option1" name="options[0]" required>  
+           </div>  
+           <div class="form-input-container">  
+              <label for="option2">Option 2:</label>  
+              <input type="text" id="option2" name="options[1]" required>  
+           </div>  
+        </div>  
+        <button type="button" onclick="addOption()">Add Option</button>  
+        <button type="submit">Create Poll</button>  
+      </form>  
+   </div>  
+   <script>  
+      let optionCount = 2;  
+      function addOption() {  
+        optionCount++;  
+        const optionsDiv = document.getElementById('options');  
+        const newOption = document.createElement('div');  
+        newOption.className = 'form-input-container';  
+        newOption.innerHTML = `  
+           <label for="option${optionCount}">Option ${optionCount}:</label>  
+           <input type="text" id="option${optionCount}" name="options[${optionCount-1}]" required>  
+        `;  
+        optionsDiv.appendChild(newOption);  
+      }  
+   </script>  
+</body>  
 </html>

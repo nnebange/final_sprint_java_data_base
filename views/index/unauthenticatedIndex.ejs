@@ -1,11 +1,21 @@
-<!-- TODO: Header? -->
-<div class="main-content">
-    <h1>Welcome to the Voting App</h1>
-
-    <div class="button-container">
-        <a href="/signup" class="action-button">Signup</a>
-        <a href="/login" class="action-button">Login</a>
-    </div>
-</div>
-</body>
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+   <meta charset="UTF-8">  
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+   <title>Welcome to Polling App</title>  
+   <link rel="stylesheet" href="/styles.css">  
+</head>  
+<body>  
+   <%- include('../partials/header') %>  
+   <div class="container">  
+      <h1>Welcome to the Polling App</h1>  
+      <p>Total Polls: <%= pollCount %></p>  
+      <p>Please log in or sign up to participate in polls.</p>  
+      <div class="button-container">  
+        <a href="/login"><button>Login</button></a>  
+        <a href="/signup"><button>Sign Up</button></a>  
+      </div>  
+   </div>  
+</body>  
 </html>
